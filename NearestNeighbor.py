@@ -27,6 +27,7 @@ class NearestNeighbor:
         # the training set is going to be modified, so we need a temporary place to hold the training_set
         original_data = copy.deepcopy(self.training_set)
         random.shuffle(original_data)
+        original_size = len(self.training_set)
         # start new_data with a random item from the original data set
         self.training_set = []
         self.training_set.append(copy.deepcopy(original_data[0]))
@@ -45,7 +46,7 @@ class NearestNeighbor:
             if obs_num == len(original_data):
                 break
         print("Original size: ")
-        print(len(original_data))
+        print(original_size)
         print("Reduced size: ")
         print(len(self.training_set))
 

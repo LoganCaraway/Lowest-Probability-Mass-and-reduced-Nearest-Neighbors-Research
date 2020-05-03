@@ -214,59 +214,37 @@ def compareProbabilisticClassifiers(base_missed, other_missed, base_name, other_
 # based_missed and other_missed are lists of size 10 containing lists. These inner lists are the result of each of the 10 folds
 # with 0 meaning correct classification and 1 meaning incorrect classification
 def compareClassifiers(base_missed, other_missed, base_name, other_name):
-    # list of MSEs for each run
-    base_MSEs = []
-    other_MSEs = []
-    # list of 0-1 loss for each run
-    base_loss_01 = []
-    other_loss_01 = []
+    # list of accuracies for each run
+    base_accuracy = []
+    other_accuracy = []
     for run_i in range(10):
         # number of trials for this run
         trials = len(base_missed[run_i])
-        # calculate the MSE for the base algorithm and the other algorithm for trial i
-        run_i_base_MSE = 0
-        run_i_other_MSE = 0
-        run_i_base_loss_01 = 0
-        run_i_other_loss_01 = 0
+        run_i_base_accuracy = 0
+        run_i_other_accuracy = 0
         for trial_i in range(trials):
-            run_i_base_MSE += pow(0-base_missed[run_i][trial_i], 2)
-            run_i_other_MSE += pow(0-other_missed[run_i][trial_i], 2)
-            run_i_base_loss_01 += base_missed[run_i][trial_i]
-            run_i_other_loss_01 += other_missed[run_i][trial_i]
-        run_i_base_MSE /= trials
-        run_i_other_MSE /= trials
-        run_i_base_loss_01 /= trials
-        run_i_other_loss_01 /= trials
-        # append the MSE for this run to the list of run MSEs
-        base_MSEs.append(run_i_base_MSE)
-        other_MSEs.append(run_i_other_MSE)
-        # append the 0-1 loss for this run to the list of run 0-1 losses
-        base_loss_01.append(run_i_base_loss_01)
-        other_loss_01.append(run_i_other_loss_01)
-    base_MSE_avg = 0
-    other_MSE_avg = 0
-    base_loss_01_avg = 0
-    other_loss_01_avg = 0
+            run_i_base_accuracy += base_missed[run_i][trial_i]
+            run_i_other_accuracy += other_missed[run_i][trial_i]
+        run_i_base_accuracy /= trials
+        run_i_other_accuracy /= trials
+        # append the accuracy for this run to the list of run accuracies
+        base_accuracy.append(1-run_i_base_accuracy)
+        other_accuracy.append(1-run_i_other_accuracy)
+    base_accuracy_avg = 0
+    other_accuracy_avg = 0
     for run_i in range(10):
-        base_MSE_avg += base_MSEs[run_i]
-        other_MSE_avg += other_MSEs[run_i]
-        base_loss_01_avg += base_loss_01[run_i]
-        other_loss_01_avg += other_loss_01[run_i]
-    base_MSE_avg /= len(base_MSEs)
-    other_MSE_avg /= len(other_MSEs)
-    base_loss_01_avg /= len(base_loss_01)
-    other_loss_01_avg /= len(other_loss_01)
+        base_accuracy_avg += base_accuracy[run_i]
+        other_accuracy_avg += other_accuracy[run_i]
+    base_accuracy_avg /= len(base_accuracy)
+    other_accuracy_avg /= len(other_accuracy)
 
-    print("Comparing 0-1 loss:")
-    print(base_name,"0-1 Loss:", base_loss_01_avg)
-    print(other_name,"0-1 Loss:", other_loss_01_avg)
-    print("Comparing MSE:")
-    print(base_name,"MSE:", base_MSE_avg)
-    print(other_name, "MSE:", other_MSE_avg)
+    print("Comparing Accuracy:")
+    print(base_name,"0-1 Loss:", base_accuracy_avg)
+    print(other_name,"0-1 Loss:", other_accuracy_avg)
     print("Paired t-test for comparing",base_name, "to", other_name, "using 0-1 loss")
 
     # run the paired t test on 0-1 loss with 9 degrees of freedom
-    pairedTTest(base_loss_01, other_loss_01, 0.05)
+    pairedTTest(base_accuracy, other_accuracy, 0.05)
 
 def pairedTTest(p_a, p_b, alpha):
     p_dif = []

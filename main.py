@@ -129,7 +129,7 @@ def tenFoldCV(chunked_data, clss_list, use_regression, k, k2, t, phi, kc, kc2, c
 
 
 
-if(len(sys.argv) > 3):
+if(len(sys.argv) > 15):
     chunks, class_list = openFile(sys.argv[1])
     uses_regression = False
     if sys.argv[3] == 'r':
